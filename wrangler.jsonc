@@ -1,0 +1,43 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "backend-haatlink",
+  "main": "src/cloudflare/worker.ts",
+  "compatibility_date": "2026-09-07",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+
+  /*
+   * The previous Worker version created HaatBackendContainer as a
+   * SQLite-backed Durable Object for Cloudflare Containers.
+   *
+   * The Free-plan Worker no longer exports that class. We must explicitly
+   * delete the old Durable Object namespace before Cloudflare accepts the
+   * new Worker version.
+   */
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": [
+        "HaatBackendContainer"
+      ]
+    },
+    {
+      "tag": "v2",
+      "deleted_classes": [
+        "HaatBackendContainer"
+      ]
+    }
+  ],
+
+  "vars": {
+    "FRONTEND_ORIGIN": "https://haat-link.web.app,https://haat-link.firebaseapp.com",
+    "GEMINI_PRIMARY_MODEL": "gemini-2.5-flash",
+    "GEMINI_FALLBACK_MODELS": "gemini-2.5-flash-lite,gemini-2.0-flash",
+    "API_RATE_LIMIT": "30",
+    "AI_RATE_LIMIT": "10",
+    "AI_DAILY_QUOTA": "100",
+    "MAX_DOWNLOAD_BYTES": "104857600",
+    "MAX_HTML_BYTES": "2000000",
+    "MAX_STREAM_BYTES": "524288000"
+  }
+}

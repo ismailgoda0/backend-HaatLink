@@ -1,0 +1,30 @@
+{
+  "name": "haat-link-backend",
+  "version": "0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/server.ts",
+    "build": "esbuild src/server.ts --bundle --platform=node --format=cjs --packages=external --minify --drop:debugger --legal-comments=none --outfile=dist/server.cjs",
+    "start": "npm run build && node dist/server.cjs",
+    "check": "tsc --noEmit",
+    "verify": "npm run check && npm run build && npm run test:architecture",
+    "clean": "node scripts/clean.mjs",
+    "test:architecture": "node scripts/architecture-check.mjs",
+    "deploy": "npm run verify && wrangler deploy"
+  },
+  "dependencies": {
+    "@google/genai": "^2.4.0",
+    "dotenv": "^17.2.3",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260906.1",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.14.0",
+    "esbuild": "^0.25.0",
+    "tsx": "^4.21.0",
+    "typescript": "~5.8.2",
+    "wrangler": "^4.129.0"
+  }
+}
